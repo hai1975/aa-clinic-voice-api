@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 
 from app.config import settings
 from app.demo_prompts import DEMO_HELP_PURPOSE, get_demo_instruction
+from app.demo_schemas import DEMO_SCHEMAS, get_schema
 from app.gemini_live import create_live_ephemeral_token
 
 app = FastAPI(title="VN Clinic AI Voice API", version="1.0.0")
@@ -33,6 +34,14 @@ def health():
     }
 
 
+@app.get("/api/demo/{demo_id}/schema")
+def demo_schema(demo_id: str):
+    try:
+        return get_schema(demo_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
 @app.post("/api/demo/live-token")
 def demo_live_token(payload: LiveTokenRequest):
     try:
@@ -40,4 +49,4 @@ def demo_live_token(payload: LiveTokenRequest):
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
-    return create_live_ephemeral_token(instruction)
+    return create_live_ephemeral_token(instruction, payload.demo_id)

@@ -8,15 +8,37 @@ from google.genai import types
 from app.config import settings
 
 
-def _build_complete_demo_tool() -> types.Tool:
+def _build_demo_tools() -> types.Tool:
     return types.Tool(
         function_declarations=[
+            types.FunctionDeclaration(
+                name="update_form_field",
+                description=(
+                    "Persist one document field ONLY after the patient explicitly confirmed the value. "
+                    "Never call before confirmation. Use exact field_id from schema. "
+                    "Encode value as JSON string. The UI updates in real time."
+                ),
+                parameters=types.Schema(
+                    type=types.Type.OBJECT,
+                    properties={
+                        "field_id": types.Schema(
+                            type=types.Type.STRING,
+                            description="Schema field id",
+                        ),
+                        "value": types.Schema(
+                            type=types.Type.STRING,
+                            description="JSON-encoded field value",
+                        ),
+                    },
+                    required=["field_id", "value"],
+                ),
+            ),
             types.FunctionDeclaration(
                 name="complete_demo",
                 description=(
                     "Call ONLY after you have ALREADY spoken the mandatory closing thank-you "
                     "message aloud, asked if the patient has more questions, and they have "
-                    "no further questions. The demo task must be fully complete. "
+                    "no further questions. All required fields should be filled. "
                     "After calling this, do not speak or continue the conversation."
                 ),
                 parameters=types.Schema(
@@ -25,22 +47,22 @@ def _build_complete_demo_tool() -> types.Tool:
                         "honorific": types.Schema(
                             type=types.Type.STRING,
                             description=(
-                                "Patient honorific used in closing: Bạn, Ông, Bà, Cô, Chú, Bác, etc."
+                                "Patient honorific: Bạn, Ông, Bà, Cô, Chú, Bác, etc."
                             ),
                         ),
                         "summary": types.Schema(
                             type=types.Type.STRING,
-                            description="Brief summary of what was completed in this demo",
+                            description="Brief summary of what was completed",
                         ),
                     },
                     required=["honorific"],
                 ),
-            )
+            ),
         ]
     )
 
 
-def create_live_ephemeral_token(system_instruction: str) -> dict:
+def create_live_ephemeral_token(system_instruction: str, demo_id: str) -> dict:
     if not settings.gemini_api_key:
         raise HTTPException(
             status_code=503,
@@ -60,7 +82,7 @@ def create_live_ephemeral_token(system_instruction: str) -> dict:
         },
         "input_audio_transcription": {},
         "output_audio_transcription": {},
-        "tools": [_build_complete_demo_tool()],
+        "tools": [_build_demo_tools()],
     }
 
     client = genai.Client(

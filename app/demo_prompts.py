@@ -1,4 +1,5 @@
-# Mục đích giúp đỡ — chèn vào lời chào thống nhất
+from app.demo_schemas import format_fields_prompt
+
 DEMO_HELP_PURPOSE: dict[str, dict[str, str]] = {
     "01": {"vi": "đăng ký khám", "en": "registration"},
     "02": {"vi": "đặt lịch hẹn", "en": "booking an appointment"},
@@ -44,6 +45,24 @@ DEMO_ROLE_HINT: dict[str, dict[str, str]] = {
         "en": "Answer about services, hours, location. Do not diagnose.",
     },
 }
+
+FORM_FILLING_VI = """
+GHI NHẬN THÔNG TIN LÊN TÀI LIỆU (bắt buộc):
+- Màn hình hiển thị tài liệu demo — mỗi thông tin khách XÁC NHẬN phải ghi ngay bằng update_form_field.
+- CHỈ gọi update_form_field SAU KHI khách xác nhận rõ ràng (đúng, ok, vâng ạ...).
+- Dùng đúng field_id. value là chuỗi JSON (vd: "Nguyễn Văn A").
+- Thu thập lần lượt các trường sau:
+{fields}
+"""
+
+FORM_FILLING_EN = """
+DOCUMENT FILLING (mandatory):
+- The screen shows a live document — call update_form_field after each confirmed answer.
+- Only call update_form_field AFTER explicit patient confirmation.
+- Use exact field_id. value is JSON string.
+- Collect these fields in order:
+{fields}
+"""
 
 COMMON_VI = """
 Bạn là trợ lý giọng nói của Phòng khám Clinic-AI (H-AI VoiceAI).
@@ -110,7 +129,11 @@ def get_demo_instruction(demo_id: str, language: str) -> str:
 
     if lang == "vi":
         common = COMMON_VI.replace("{purpose}", purpose)
-        return f"{common}\n\nNHIỆM VỤ DEMO NÀY: {role_hint}"
+        fields = format_fields_prompt(demo_id, lang)
+        form = FORM_FILLING_VI.replace("{fields}", fields)
+        return f"{common}\n\nNHIỆM VỤ DEMO NÀY: {role_hint}\n\n{form}"
 
     common = COMMON_EN.replace("{purpose}", purpose)
-    return f"{common}\n\nDEMO TASK: {role_hint}"
+    fields = format_fields_prompt(demo_id, lang)
+    form = FORM_FILLING_EN.replace("{fields}", fields)
+    return f"{common}\n\nDEMO TASK: {role_hint}\n\n{form}"
