@@ -3,12 +3,44 @@ from datetime import datetime, timedelta, timezone
 from fastapi import HTTPException
 from google import genai
 from google.genai import errors as genai_errors
+from google.genai import types
 
 from app.config import settings
 
 
-def create_live_ephemeral_token(system_instruction: str) -> dict:
-    if not settings.gemini_api_key:
+def _build_complete_demo_tool() -> types.Tool:
+    return types.Tool(
+        function_declarations=[
+            types.FunctionDeclaration(
+                name="complete_demo",
+                description=(
+                    "Call ONLY after you have ALREADY spoken the mandatory closing thank-you "
+                    "message aloud, asked if the patient has more questions, and they have "
+                    "no further questions. The demo task must be fully complete. "
+                    "After calling this, do not speak or continue the conversation."
+                ),
+                parameters=types.Schema(
+                    type=types.Type.OBJECT,
+                    properties={
+                        "honorific": types.Schema(
+                            type=types.Type.STRING,
+                            description=(
+                                "Patient honorific used in closing: Bạn, Ông, Bà, Cô, Chú, Bác, etc."
+                            ),
+                        ),
+                        "summary": types.Schema(
+                            type=types.Type.STRING,
+                            description="Brief summary of what was completed in this demo",
+                        ),
+                    },
+                    required=["honorific"],
+                ),
+            )
+        ]
+    )
+
+
+def create_live_ephemeral_token(system_instruction: str) -> dict:    if not settings.gemini_api_key:
         raise HTTPException(
             status_code=503,
             detail="GEMINI_API_KEY is not configured on the server",
@@ -27,6 +59,7 @@ def create_live_ephemeral_token(system_instruction: str) -> dict:
         },
         "input_audio_transcription": {},
         "output_audio_transcription": {},
+        "tools": [_build_complete_demo_tool()],
     }
 
     client = genai.Client(
