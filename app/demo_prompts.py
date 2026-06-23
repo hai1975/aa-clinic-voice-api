@@ -29,8 +29,8 @@ DEMO_ROLE_HINT: dict[str, dict[str, str]] = {
         "en": "Ask medicines, dosage, schedule; remind on time.",
     },
     "05": {
-        "vi": "Hỏi triệu chứng chính, phân loại mức độ khẩn cấp.",
-        "en": "Ask key symptoms, assess urgency level.",
+        "vi": "Hỏi triệu chứng chính, phân loại mức độ khẩn cấp. Đặc biệt: bệnh nhân có thể nói bất kỳ ngôn ngữ nào — trả lời đúng ngôn ngữ họ dùng.",
+        "en": "Ask key symptoms, assess urgency. Patient may speak any language — reply in their language.",
     },
     "06": {
         "vi": "Hỏi tình trạng sau khám, tác dụng phụ thuốc, lịch tái khám.",
@@ -62,6 +62,25 @@ DOCUMENT FILLING (mandatory):
 - Use exact field_id. value is JSON string.
 - Collect these fields in order:
 {fields}
+"""
+
+MULTILINGUAL_VI = """
+ĐA NGÔN NGỮ (bắt buộc — mọi demo):
+- Tự nhận biết ngôn ngữ bệnh nhân đang nói: tiếng Việt, Anh, Pháp, Trung, Hàn, Nhật, và các ngôn ngữ khác.
+- Luôn trả lời bằng ĐÚNG ngôn ngữ bệnh nhân vừa dùng — không ép họ đổi sang tiếng Việt.
+- TUYỆT ĐỐI KHÔNG nói "chỉ hỗ trợ tiếng Việt", "I only speak Vietnamese", hoặc từ chối ngôn ngữ khác.
+- Lời chào đầu tiên có thể bằng tiếng Việt; ngay khi bệnh nhân trả lời bằng ngôn ngữ khác → chuyển sang ngôn ngữ đó cho toàn bộ cuộc hội thoại.
+- Khi nói tiếng Việt: ưu tiên giọng miền Nam, lịch sự. Khi nói ngôn ngữ khác: giọng ấm áp, tự nhiên, đúng ngữ pháp ngôn ngữ đó.
+- Giá trị ghi vào form (update_form_field) dùng ngôn ngữ bệnh nhân đã xác nhận.
+"""
+
+MULTILINGUAL_EN = """
+MULTILINGUAL (mandatory — every demo):
+- Auto-detect the patient's spoken language: Vietnamese, English, French, Chinese, Korean, Japanese, and others.
+- Always reply in the SAME language the patient just used — never force them to switch to Vietnamese.
+- NEVER say you only support Vietnamese or refuse another language.
+- Opening greeting may be in Vietnamese or English per session; as soon as the patient replies in another language, switch to that language for the rest of the call.
+- Form values (update_form_field) should use the language the patient confirmed.
 """
 
 COMMON_VI = """
@@ -131,9 +150,9 @@ def get_demo_instruction(demo_id: str, language: str) -> str:
         common = COMMON_VI.replace("{purpose}", purpose)
         fields = format_fields_prompt(demo_id, lang)
         form = FORM_FILLING_VI.replace("{fields}", fields)
-        return f"{common}\n\nNHIỆM VỤ DEMO NÀY: {role_hint}\n\n{form}"
+        return f"{common}\n\n{MULTILINGUAL_VI}\n\nNHIỆM VỤ DEMO NÀY: {role_hint}\n\n{form}"
 
     common = COMMON_EN.replace("{purpose}", purpose)
     fields = format_fields_prompt(demo_id, lang)
     form = FORM_FILLING_EN.replace("{fields}", fields)
-    return f"{common}\n\nDEMO TASK: {role_hint}\n\n{form}"
+    return f"{common}\n\n{MULTILINGUAL_EN}\n\nDEMO TASK: {role_hint}\n\n{form}"
