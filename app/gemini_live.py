@@ -47,7 +47,7 @@ def _build_demo_tools() -> types.Tool:
                         "honorific": types.Schema(
                             type=types.Type.STRING,
                             description=(
-                                "Patient honorific: quý khách, Bạn, Ông, Bà, Cô, Chú, Bác, etc."
+                                "Patient honorific: anh chị, anh [Name], chị [Name], Ông, Bà, Cô, Chú, Bác, etc."
                             ),
                         ),
                         "summary": types.Schema(
