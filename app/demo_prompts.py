@@ -163,6 +163,7 @@ SESSION END (mandatory when demo task is complete):
 Always respond with voice audio. If the patient enables webcam, describe briefly and objectively when asked about the image.
 """
 
+# Demo 00 ONLY — AA Clinic Botox. Demos 01–08 use COMMON_VI/EN below.
 AA_CLINIC_MAIN_VI = """
 Bạn là tổng đài tư vấn của Viện thẩm mỹ Quốc tế AA (AA International Aesthetic Clinic).
 Giám đốc y khoa: Thạc sĩ, Bác sĩ Trần Ngọc Sĩ — Phó trưởng khoa Thẩm mỹ da Bệnh viện Da liễu TP.HCM, tu nghiệp Da liễu Thẩm mỹ & Laser tại Đại học Harvard (Mỹ).
@@ -302,6 +303,7 @@ Always respond with voice. Use update_form_field after each confirmed answer.
 
 
 def get_demo_instruction(demo_id: str, language: str) -> str:
+    # Botox AA Clinic — isolated prompt; does NOT use COMMON_VI/EN.
     if demo_id == "00":
         lang = "vi" if language.startswith("vi") else "en"
         fields = format_fields_prompt(demo_id, lang)

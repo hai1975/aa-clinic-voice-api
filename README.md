@@ -12,8 +12,8 @@ Mint ephemeral token Gemini Live — `GEMINI_API_KEY` chỉ lưu trên server (R
 | GET | `/api/demo/{demo_id}/schema` | Schema form theo demo |
 | POST | `/api/demo/live-token` | Body: `{ "demo_id": "00".."08", "language": "vi" \| "en" }` |
 
-**Demo `00`** — Tư vấn Botox AA Clinic (kịch bản chính theo PDF).  
-**Demo `01`–`08`** — Các mô-đun Voice AI bổ sung.
+**Demo `00`** — Tư vấn Botox AA Clinic (kịch bản riêng: không hỏi tên khi chào, xác nhận danh xưng từ giọng nói, chỉ hỏi tên/SĐT khi đặt lịch).  
+**Demo `01`–`08`** — Các mô-đun Voice AI bổ sung (dùng kịch bản Clinic-AI chung, hỏi tên ngay khi chào).
 
 ## Chạy local
 
