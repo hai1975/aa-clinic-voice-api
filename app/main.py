@@ -28,7 +28,7 @@ class LiveTokenRequest(BaseModel):
 def health():
     return {
         "status": "ok",
-        "service": "vnclinic-voice-api",
+        "service": "aa-clinic-voice-api",
         "gemini_configured": bool(settings.gemini_api_key),
         "demos": list(DEMO_HELP_PURPOSE.keys()),
     }

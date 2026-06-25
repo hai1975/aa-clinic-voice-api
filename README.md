@@ -81,6 +81,12 @@ curl https://<ten-service>.onrender.com/api/health
 
 Kết quả mong đợi: `"status": "ok"`, `"demos"` có `"00"` … `"08"`, `"gemini_configured": true`.
 
+**Production (đã deploy):**
+
+- URL: `https://aa-clinic-voice-api.onrender.com`
+- Blueprint ID: `exs-d8ufmtsm0tmc73a67l10`
+- Health: `GET /api/health`
+
 ### Bước 5 — Gắn frontend
 
 Trong repo frontend (`VN_Clinic_HAI`), set trước khi build production:
