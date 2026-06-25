@@ -20,7 +20,7 @@ app.add_middleware(
 
 
 class LiveTokenRequest(BaseModel):
-    demo_id: str = Field(..., pattern=r"^0[1-8]$")
+    demo_id: str = Field(..., pattern=r"^0[0-8]$")
     language: str = "vi"
 
 
