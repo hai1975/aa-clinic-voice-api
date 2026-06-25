@@ -5,7 +5,6 @@ DEMO_SCHEMAS: dict[str, dict] = {
         "title": {"vi": "Phiếu tư vấn Botox", "en": "Botox Consultation Record"},
         "doc_type": "form",
         "fields": [
-            {"id": "patient_name", "label": {"vi": "Họ và tên", "en": "Full name"}},
             {"id": "honorific", "label": {"vi": "Danh xưng", "en": "Honorific"}},
             {"id": "inquiry_topic", "label": {"vi": "Nhu cầu tư vấn", "en": "Inquiry"}},
             {"id": "botox_history", "label": {"vi": "Tiền sử tiêm Botox", "en": "Botox history"}},
@@ -13,6 +12,8 @@ DEMO_SCHEMAS: dict[str, dict] = {
             {"id": "safety_assessment", "label": {"vi": "Đánh giá an toàn", "en": "Safety assessment"}},
             {"id": "treatment_zones", "label": {"vi": "Vùng điều trị", "en": "Treatment zones"}},
             {"id": "estimated_units", "label": {"vi": "Định lượng Unit", "en": "Estimated units"}},
+            {"id": "patient_name", "label": {"vi": "Họ và tên", "en": "Full name"}},
+            {"id": "phone", "label": {"vi": "Số điện thoại", "en": "Phone number"}},
             {"id": "appointment_date", "label": {"vi": "Ngày hẹn", "en": "Appointment date"}},
             {"id": "appointment_time", "label": {"vi": "Giờ hẹn", "en": "Appointment time"}},
             {"id": "action_result", "label": {"vi": "Kết quả xử lý", "en": "Outcome"}},
